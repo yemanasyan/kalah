@@ -1,6 +1,10 @@
 package com.backbase.kalah.entity;
 
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -30,9 +34,12 @@ public class Player extends BaseEntity {
 		this.uuid = UUID.randomUUID();
 	}
 
-	// TODO write javadoc for all methods
 	public UUID getUuid() {
 		return uuid;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
 	}
 
 	public Boolean getMyTurn() {
@@ -52,8 +59,38 @@ public class Player extends BaseEntity {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Player rhs = (Player) obj;
+		return new EqualsBuilder()
+				.appendSuper(super.equals(obj))
+				.append(this.uuid, rhs.uuid)
+				.append(this.myTurn, rhs.myTurn)
+				.append(this.inGame, rhs.inGame)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.appendSuper(super.hashCode())
+				.append(uuid)
+				.append(myTurn)
+				.append(inGame)
+				.toHashCode();
+	}
+	
+	@Override
 	public String toString() {
-		return new org.apache.commons.lang3.builder.ToStringBuilder(this)
+		return new ToStringBuilder(this)
 				.appendSuper(super.toString())
 				.append("uuid", uuid)
 				.append("myTurn", myTurn)

@@ -1,7 +1,6 @@
 package com.backbase.kalah.service;
 
-import com.backbase.kalah.exception.EntityNotFoundException;
-import com.backbase.kalah.exception.NotPlayerTurnException;
+import com.backbase.kalah.entity.Kalah;
 
 import java.util.UUID;
 
@@ -13,12 +12,18 @@ import java.util.UUID;
 public interface KalahService {
 
 	/**
-	 * Play the game.
+	 * Find by player UUID.
 	 *
-	 * @param position   position from which stones where taken.
 	 * @param playerUuid player uuid
-	 * @throws EntityNotFoundException if not found player
-	 * @throws NotPlayerTurnException  if it's not players turn
+	 * @return found Kalah
 	 */
-	void play(Integer position, UUID playerUuid) throws EntityNotFoundException, NotPlayerTurnException;
+	Kalah findByPlayerUuid(UUID playerUuid);
+
+	/**
+	 * Save Kalah.
+	 *
+	 * @param kalah kalah to save
+	 * @return saved kalah
+	 */
+	Kalah save(Kalah kalah);
 }

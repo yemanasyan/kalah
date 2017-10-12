@@ -1,12 +1,18 @@
 package com.backbase.kalah.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.UUID;
 
 /**
@@ -16,7 +22,8 @@ import java.util.UUID;
 @Table(name = "kalah")
 public class Kalah extends BaseEntity {
 
-	private static final Integer PITS_COUNT = 6;
+	// TODO make it configurable and move it to properties file
+	public static final Integer PITS_COUNT = 6;
 
 	@Column(name = "kalah_uuid", unique = true, nullable = false)
 	private UUID uuid;
@@ -25,7 +32,7 @@ public class Kalah extends BaseEntity {
 	@JoinColumn(name = "game_id")
 	private Game game;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
 	@JoinColumn(name = "player_id")
 	private Player player;
 
@@ -34,6 +41,12 @@ public class Kalah extends BaseEntity {
 
 	@Column(name = "pits", nullable = false)
 	private Integer[] pits;
+
+	/**
+	 * Default constructor.
+	 */
+	public Kalah() {
+	}
 
 	/**
 	 * Initialize based on game and player.
@@ -53,17 +66,28 @@ public class Kalah extends BaseEntity {
 		}
 	}
 
-	// TODO write javadoc
 	public UUID getUuid() {
 		return uuid;
+	}
+
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
 	}
 
 	public Game getGame() {
 		return game;
 	}
 
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
 	public Player getPlayer() {
 		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public Integer getHome() {
@@ -80,5 +104,73 @@ public class Kalah extends BaseEntity {
 
 	public void setPits(Integer[] pits) {
 		this.pits = pits;
+	}
+
+	@Transient
+	public void incrementPits(int numberOfPits) {
+		for (int i = 0; i < numberOfPits; i++) {
+			pits[i]++;
+		}
+	}
+
+	@Transient
+	public void incrementHome(int numberOfStones) {
+		home += numberOfStones;
+	}
+
+	@Transient
+	public void emptyPit(int pitNumber) {
+		pits[pitNumber] = 0;
+	}
+
+	@Transient
+	public Integer getPitStonesCount(int pitNumber) {
+		return pits[pitNumber];
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Kalah rhs = (Kalah) obj;
+		return new EqualsBuilder()
+				.appendSuper(super.equals(obj))
+				.append(this.uuid, rhs.uuid)
+				.append(this.game, rhs.game)
+				.append(this.player, rhs.player)
+				.append(this.home, rhs.home)
+				.append(this.pits, rhs.pits)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.appendSuper(super.hashCode())
+				.append(uuid)
+				.append(game)
+				.append(player)
+				.append(home)
+				.append(pits)
+				.toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.appendSuper(super.toString())
+				.append("uuid", uuid)
+				.append("game", game)
+				.append("player", player)
+				.append("home", home)
+				.append("pits", pits)
+				.toString();
 	}
 }

@@ -12,8 +12,4 @@ public class NotPlayerTurnException extends KalahGameException {
 	public NotPlayerTurnException(String message) {
 		super(message);
 	}
-
-	public NotPlayerTurnException(String message, Exception cause) {
-		super(message, cause);
-	}
 }
