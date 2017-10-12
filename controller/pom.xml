@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>com.backbase.kalah</groupId>
-	<artifactId>endpoint</artifactId>
+	<artifactId>controller</artifactId>
 
 	<properties>
 		<swagger.version>2.7.0</swagger.version>
@@ -19,6 +19,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.backbase.kalah</groupId>
+			<artifactId>service-impl</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -54,4 +59,13 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

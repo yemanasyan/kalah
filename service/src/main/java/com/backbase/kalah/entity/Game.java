@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -14,6 +17,7 @@ import java.util.UUID;
  * @author Yengibar Manasyan
  */
 @Entity
+@Table(name = "game")
 public class Game extends BaseEntity {
 
 	@Column(name = "game_uuid", unique = true, nullable = false)
@@ -30,16 +34,17 @@ public class Game extends BaseEntity {
 	@Column(name = "finished", nullable = false)
 	private Boolean finished;
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "game")
+	private List<Kalah> kalahs;
+
 	/**
-	 * Initialize based on players.
+	 * Initialize based on first players.
 	 *
 	 * @param player1 first player
-	 * @param player2 second player
 	 */
-	public Game(Player player1, Player player2) {
+	public Game(Player player1) {
 		this.uuid = UUID.randomUUID();
 		this.player1 = player1;
-		this.player2 = player2;
 		finished = false;
 	}
 
@@ -56,11 +61,19 @@ public class Game extends BaseEntity {
 		return player2;
 	}
 
+	public void setPlayer2(Player player2) {
+		this.player2 = player2;
+	}
+
 	public Boolean getFinished() {
 		return finished;
 	}
 
 	public void setFinished(Boolean finished) {
 		this.finished = finished;
+	}
+
+	public List<Kalah> getKalahs() {
+		return kalahs;
 	}
 }

@@ -6,12 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.UUID;
 
 /**
  * @author Yengibar Manasyan
  */
 @Entity
+@Table(name = "kalah")
 public class Kalah extends BaseEntity {
 
 	private static final Integer PITS_COUNT = 6;
