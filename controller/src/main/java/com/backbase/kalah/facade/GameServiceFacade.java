@@ -2,6 +2,8 @@ package com.backbase.kalah.facade;
 
 import com.backbase.kalah.bean.GameBean;
 
+import java.util.UUID;
+
 /**
  * Facade interface to convert beans to entities.
  *
@@ -15,4 +17,12 @@ public interface GameServiceFacade {
 	 * @return created or joined game
 	 */
 	GameBean enterToGame();
+
+	/**
+	 * Get game by uuid.
+	 *
+	 * @param gameId game uuid
+	 * @return found game
+	 */
+	GameBean getGameByPlayerId(UUID gameId);
 }

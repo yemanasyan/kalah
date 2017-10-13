@@ -81,6 +81,12 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
+	public Game findByPlayerUuid(UUID playerUuid) {
+		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
+		return gameRepo.findFirstByPlayer1UuidOrPlayer2Uuid(playerUuid, playerUuid);
+	}
+
+	@Override
 	public Player findGameOpponentByPlayerId(Long playerId) {
 		Assert.notNull(playerId, "Provided id shouldn't be null");
 		final Game game = findByPlayerId(playerId);

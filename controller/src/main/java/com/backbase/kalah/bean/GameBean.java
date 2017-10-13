@@ -3,15 +3,15 @@ package com.backbase.kalah.bean;
 import java.util.UUID;
 
 /**
- * Bean to transfer game related data.
+ * Bean to transfer player related data.
  *
  * @author Yengibar Manasyan
  */
-public class GameBean extends BaseBean {
+public class GameBean {
 
 	private static final long serialVersionUID = 1L;
 
-	private UUID playerUuid;
+	private UUID playerId;
 
 	private Boolean startGame;
 
@@ -28,12 +28,12 @@ public class GameBean extends BaseBean {
 	public GameBean() {
 	}
 
-	public UUID getPlayerUuid() {
-		return playerUuid;
+	public UUID getPlayerId() {
+		return playerId;
 	}
 
-	public void setPlayerUuid(UUID playerUuid) {
-		this.playerUuid = playerUuid;
+	public void setPlayerId(UUID playerId) {
+		this.playerId = playerId;
 	}
 
 	public Boolean getStartGame() {

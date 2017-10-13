@@ -11,7 +11,7 @@ public class KalahBean extends BaseBean {
 
 	private GameBean game;
 
-	private PlayerBean player;
+	private GameBean player;
 
 	private Integer home;
 
@@ -31,11 +31,11 @@ public class KalahBean extends BaseBean {
 		this.game = game;
 	}
 
-	public PlayerBean getPlayer() {
+	public GameBean getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(PlayerBean player) {
+	public void setPlayer(GameBean player) {
 		this.player = player;
 	}
 

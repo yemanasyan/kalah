@@ -12,7 +12,7 @@ public abstract class BaseBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private UUID uuid;
+	private UUID id;
 
 	/**
 	 * Default constructor.
@@ -20,11 +20,11 @@ public abstract class BaseBean implements Serializable {
 	public BaseBean() {
 	}
 
-	public UUID getUuid() {
-		return uuid;
+	public UUID getId() {
+		return id;
 	}
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
+	public void setId(UUID id) {
+		this.id = id;
 	}
 }

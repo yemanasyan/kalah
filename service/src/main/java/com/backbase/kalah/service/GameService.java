@@ -40,6 +40,14 @@ public interface GameService {
 	Game findByPlayerId(Long playerId);
 
 	/**
+	 * Find by player UUID.
+	 *
+	 * @param playerUuid player UUID
+	 * @return found game
+	 */
+	Game findByPlayerUuid(UUID playerUuid);
+
+	/**
 	 * Find opponent by player id.
 	 *
 	 * @param playerId player id
