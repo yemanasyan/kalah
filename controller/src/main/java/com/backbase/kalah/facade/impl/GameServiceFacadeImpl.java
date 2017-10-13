@@ -3,6 +3,9 @@ package com.backbase.kalah.facade.impl;
 import com.backbase.kalah.bean.GameBean;
 import com.backbase.kalah.entity.Game;
 import com.backbase.kalah.entity.Player;
+import com.backbase.kalah.exception.EmptyPitException;
+import com.backbase.kalah.exception.EntityNotFoundException;
+import com.backbase.kalah.exception.NotPlayerTurnException;
 import com.backbase.kalah.facade.GameServiceFacade;
 import com.backbase.kalah.service.GameService;
 import ma.glasnost.orika.MapperFacade;
@@ -44,15 +47,7 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 		return gameBean;
 	}
 
-	@Override
-	public GameBean enterToGame() {
-		final Game game = gameService.enterToGame();
-		return convertToPlayerBean(game);
-	}
-
-	@Override
-	public GameBean getGameByPlayerId(UUID playerId) {
-		final Game game = gameService.findByPlayerUuid(playerId);
+	private static GameBean convertToGameBean(Game game, UUID playerId) {
 		final GameBean gameBean = new GameBean();
 		gameBean.setPlayerId(playerId);
 		gameBean.setFinished(game.getFinished());
@@ -74,7 +69,24 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 		gameBean.setHome(player.getKalah().getHome());
 		gameBean.setOpponentPits(opponent.getKalah().getPits());
 		gameBean.setOpponentHome(opponent.getKalah().getHome());
-
 		return gameBean;
+	}
+
+	@Override
+	public GameBean enterToGame() {
+		final Game game = gameService.enterToGame();
+		return convertToPlayerBean(game);
+	}
+
+	@Override
+	public GameBean getGameByPlayerId(UUID playerId) {
+		final Game game = gameService.findByPlayerUuid(playerId);
+		return convertToGameBean(game, playerId);
+	}
+
+	@Override
+	public GameBean play(UUID playerId, Integer position) throws EntityNotFoundException, EmptyPitException, NotPlayerTurnException {
+		final Game game = gameService.play(playerId, position);
+		return convertToGameBean(game, playerId);
 	}
 }

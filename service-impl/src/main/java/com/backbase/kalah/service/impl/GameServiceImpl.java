@@ -103,7 +103,7 @@ public class GameServiceImpl implements GameService {
 
 	@Transactional
 	@Override
-	public Game play(Integer position, UUID playerUuid) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException {
+	public Game play(UUID playerUuid, Integer position) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException {
 		Assert.notNull(position, "Provided position shouldn't be null");
 		Assert.isTrue(position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
 		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");

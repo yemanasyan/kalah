@@ -66,12 +66,12 @@ public interface GameService {
 	/**
 	 * Play the game.
 	 *
-	 * @param position   position from which stones where taken.
 	 * @param playerUuid player uuid
+	 * @param position   position from which stones where taken.
 	 * @return changed game
 	 * @throws EntityNotFoundException if not found player
 	 * @throws NotPlayerTurnException  if it's not players turn
 	 * @throws EmptyPitException       if pit with provided position is empty
 	 */
-	Game play(Integer position, UUID playerUuid) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException;
+	Game play(UUID playerUuid, Integer position) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException;
 }
