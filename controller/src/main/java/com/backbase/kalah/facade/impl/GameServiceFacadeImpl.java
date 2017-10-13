@@ -33,6 +33,12 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 	@Override
 	public GameBean enterToGame() {
 		final Game game = gameService.enterToGame();
-		return mapperFacade.map(game, GameBean.class);
+		final GameBean gameBean = new GameBean();
+		gameBean.setUuid(game.getUuid());
+		gameBean.setPlayerUuid(game.getPlayer2() != null ? game.getPlayer2().getUuid() : game.getPlayer1().getUuid());
+		gameBean.setFinished(false);
+		gameBean.setStartGame(game.getPlayer1() != null && game.getPlayer2() != null);
+
+		return gameBean;
 	}
 }

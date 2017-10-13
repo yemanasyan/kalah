@@ -1,6 +1,6 @@
 package com.backbase.kalah.bean;
 
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Bean to transfer game related data.
@@ -11,31 +11,37 @@ public class GameBean extends BaseBean {
 
 	private static final long serialVersionUID = 1L;
 
-	private PlayerBean player1;
+	private UUID playerUuid;
 
-	private PlayerBean player2;
+	private Boolean startGame;
 
 	private Boolean finished;
 
-	private List<KalahBean> kalahs;
+	private Integer[] pits;
+
+	private Integer home;
+
+	private Integer[] opponentPits;
+
+	private Integer opponentHome;
 
 	public GameBean() {
 	}
 
-	public PlayerBean getPlayer1() {
-		return player1;
+	public UUID getPlayerUuid() {
+		return playerUuid;
 	}
 
-	public void setPlayer1(PlayerBean player1) {
-		this.player1 = player1;
+	public void setPlayerUuid(UUID playerUuid) {
+		this.playerUuid = playerUuid;
 	}
 
-	public PlayerBean getPlayer2() {
-		return player2;
+	public Boolean getStartGame() {
+		return startGame;
 	}
 
-	public void setPlayer2(PlayerBean player2) {
-		this.player2 = player2;
+	public void setStartGame(Boolean startGame) {
+		this.startGame = startGame;
 	}
 
 	public Boolean getFinished() {
@@ -46,11 +52,35 @@ public class GameBean extends BaseBean {
 		this.finished = finished;
 	}
 
-	public List<KalahBean> getKalahs() {
-		return kalahs;
+	public Integer[] getPits() {
+		return pits;
 	}
 
-	public void setKalahs(List<KalahBean> kalahs) {
-		this.kalahs = kalahs;
+	public void setPits(Integer[] pits) {
+		this.pits = pits;
+	}
+
+	public Integer getHome() {
+		return home;
+	}
+
+	public void setHome(Integer home) {
+		this.home = home;
+	}
+
+	public Integer[] getOpponentPits() {
+		return opponentPits;
+	}
+
+	public void setOpponentPits(Integer[] opponentPits) {
+		this.opponentPits = opponentPits;
+	}
+
+	public Integer getOpponentHome() {
+		return opponentHome;
+	}
+
+	public void setOpponentHome(Integer opponentHome) {
+		this.opponentHome = opponentHome;
 	}
 }
