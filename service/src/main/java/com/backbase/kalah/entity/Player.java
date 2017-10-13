@@ -24,9 +24,6 @@ public class Player extends BaseEntity {
 	@Column(name = "my_turn", nullable = false)
 	private Boolean myTurn;
 
-	@Column(name = "in_game", nullable = false)
-	private Boolean inGame;
-
 	/**
 	 * Default constructor.
 	 */
@@ -50,14 +47,6 @@ public class Player extends BaseEntity {
 		this.myTurn = myTurn;
 	}
 
-	public Boolean getInGame() {
-		return inGame;
-	}
-
-	public void setInGame(Boolean inGame) {
-		this.inGame = inGame;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -74,7 +63,6 @@ public class Player extends BaseEntity {
 				.appendSuper(super.equals(obj))
 				.append(this.uuid, rhs.uuid)
 				.append(this.myTurn, rhs.myTurn)
-				.append(this.inGame, rhs.inGame)
 				.isEquals();
 	}
 
@@ -84,7 +72,6 @@ public class Player extends BaseEntity {
 				.appendSuper(super.hashCode())
 				.append(uuid)
 				.append(myTurn)
-				.append(inGame)
 				.toHashCode();
 	}
 	
@@ -94,7 +81,6 @@ public class Player extends BaseEntity {
 				.appendSuper(super.toString())
 				.append("uuid", uuid)
 				.append("myTurn", myTurn)
-				.append("inGame", inGame)
 				.toString();
 	}
 }

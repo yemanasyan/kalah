@@ -46,8 +46,9 @@ public class GameServiceImpl implements GameService {
 
 	@Transactional
 	@Override
-	public Game enterToGame(Player player) {
-		Assert.notNull(player, "Provided player shouldn't be null");
+	public Game enterToGame() {
+		// Create new Player every time when someone want to start new game
+		final Player player = new Player();
 
 		final Game existingGame = gameRepo.findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 		final Game game;

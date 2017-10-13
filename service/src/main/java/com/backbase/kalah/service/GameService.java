@@ -1,7 +1,6 @@
 package com.backbase.kalah.service;
 
 import com.backbase.kalah.entity.Game;
-import com.backbase.kalah.entity.Player;
 import com.backbase.kalah.exception.EmptyPitException;
 import com.backbase.kalah.exception.EntityNotFoundException;
 import com.backbase.kalah.exception.NotPlayerTurnException;
@@ -17,11 +16,11 @@ public interface GameService {
 
 	/**
 	 * Enter to game.
+	 * It should create a new Player also.
 	 *
-	 * @param player player
 	 * @return the game
 	 */
-	Game enterToGame(Player player);
+	Game enterToGame();
 
 	/**
 	 * Find game by UUID.
