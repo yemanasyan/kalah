@@ -1,12 +1,11 @@
 package com.backbase.kalah.entity;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.util.UUID;
 
 /**
  * Base entity.
@@ -21,6 +20,16 @@ public class BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "uuid", unique = true, nullable = false)
+	private UUID uuid;
+
+	/**
+	 * Default constructor.
+	 */
+	public BaseEntity() {
+		this.uuid = UUID.randomUUID();
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -29,11 +38,11 @@ public class BaseEntity {
 		this.id = id;
 	}
 
+	public UUID getUuid() {
+		return uuid;
+	}
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("id", id)
-				.toString();
+	public void setUuid(UUID uuid) {
+		this.uuid = uuid;
 	}
 }

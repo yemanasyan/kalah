@@ -15,4 +15,6 @@ public interface GameRepo extends JpaRepository<Game, Long> {
 	Game findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 
 	Game findByUuid(UUID uuid);
+
+	Game findFirstByPlayer1IdOrPlayer2Id(Long firstId, Long secondId);
 }

@@ -31,6 +31,14 @@ public interface GameService {
 	Game findByUUID(UUID id);
 
 	/**
+	 * Find by player id.
+	 *
+	 * @param playerId player id
+	 * @return found game
+	 */
+	Game findByPlayerId(Long playerId);
+
+	/**
 	 * Save game.
 	 *
 	 * @param game game to save
@@ -43,10 +51,10 @@ public interface GameService {
 	 *
 	 * @param position   position from which stones where taken.
 	 * @param playerUuid player uuid
+	 * @return changed game
 	 * @throws EntityNotFoundException if not found player
 	 * @throws NotPlayerTurnException  if it's not players turn
 	 * @throws EmptyPitException       if pit with provided position is empty
-	 * @return changed game
 	 */
 	Game play(Integer position, UUID playerUuid) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException;
 }

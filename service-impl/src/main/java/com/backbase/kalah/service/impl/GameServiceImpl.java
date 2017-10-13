@@ -53,15 +53,17 @@ public class GameServiceImpl implements GameService {
 		final Game existingGame = gameRepo.findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 		final Game game;
 		if (existingGame == null) {
+			game = new Game();
 			player.setMyTurn(true);
-			game = new Game(player);
+			final Player savedPlayer = playerService.save(player);
+			game.setPlayer1(savedPlayer);
 		} else {
 			player.setMyTurn(false);
+			final Player savedPlayer = playerService.save(player);
 			game = existingGame;
-			game.setPlayer2(player);
+			game.setPlayer2(savedPlayer);
 		}
 
-		playerService.save(player);
 		return gameRepo.save(game);
 	}
 
@@ -73,11 +75,17 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
+	public Game findByPlayerId(Long playerId) {
+		Assert.notNull(playerId, "Provided playerId shouldn't be null");
+		return gameRepo.findFirstByPlayer1IdOrPlayer2Id(playerId, playerId);
+	}
+
+	@Transactional
+	@Override
 	public Game save(Game game) {
 		Assert.notNull(game, "Provided game shouldn't be null");
 		return gameRepo.save(game);
 	}
-
 
 	@Transactional
 	@Override
@@ -97,10 +105,13 @@ public class GameServiceImpl implements GameService {
 
 		final Kalah kalah = kalahService.findByPlayerUuid(playerUuid);
 		final Integer[] pits = kalah.getPits();
-		final Game game = kalah.getGame();
 
 		// Find opponent
-		final Player opponent = game.getPlayer1().getUuid() != playerUuid ? game.getPlayer1() : game.getPlayer2();
+		final Player opponent = playerService.findOpponent(player.getId());
+		if (opponent == null) {
+			throw new EntityNotFoundException("Not found opponent for player with UUID: " + playerUuid);
+		}
+
 		final Kalah opponentKalah = kalahService.findByPlayerUuid(opponent.getUuid());
 
 		final Integer stones = pits[position];
@@ -143,6 +154,7 @@ public class GameServiceImpl implements GameService {
 		kalahService.save(kalah);
 		kalahService.save(opponentKalah);
 
+		final Game game = findByPlayerId(player.getId());
 		final Game refreshedGame;
 		if (Stream.of(pits).noneMatch(s -> s == 0) || Stream.of(opponentPits).noneMatch(s -> s == 0)) {
 			game.setFinished(true);

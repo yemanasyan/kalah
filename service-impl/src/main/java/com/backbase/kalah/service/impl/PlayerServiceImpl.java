@@ -1,6 +1,10 @@
 package com.backbase.kalah.service.impl;
 
+import com.backbase.kalah.entity.Game;
+import com.backbase.kalah.entity.Kalah;
 import com.backbase.kalah.entity.Player;
+import com.backbase.kalah.service.GameService;
+import com.backbase.kalah.service.KalahService;
 import com.backbase.kalah.service.PlayerService;
 import com.backbase.kalah.service.reporitory.PlayerRepo;
 import org.springframework.stereotype.Service;
@@ -17,19 +21,31 @@ public class PlayerServiceImpl implements PlayerService {
 
 	private final PlayerRepo playerRepo;
 
+	private final KalahService kalahService;
+
+	private final GameService gameService;
+
 	/**
 	 * Init based on provided beans.
 	 *
-	 * @param playerRepo player repo
+	 * @param playerRepo   player repo
+	 * @param kalahService kalah service
 	 */
-	public PlayerServiceImpl(PlayerRepo playerRepo) {
+	public PlayerServiceImpl(PlayerRepo playerRepo, KalahService kalahService, GameService gameService) {
 		this.playerRepo = playerRepo;
+		this.kalahService = kalahService;
+		this.gameService = gameService;
 	}
 
 	@Transactional
 	@Override
 	public Player save(Player player) {
 		Assert.notNull(player, "Provided player shouldn't be null");
+		if (player.getKalah() == null) {
+			final Kalah kalah = kalahService.save(new Kalah());
+			player.setKalah(kalah);
+		}
+
 		return playerRepo.save(player);
 	}
 
@@ -37,5 +53,13 @@ public class PlayerServiceImpl implements PlayerService {
 	public Player findByUuid(UUID uuid) {
 		Assert.notNull(uuid, "Provided uuid shouldn't be null");
 		return playerRepo.findByUuid(uuid);
+	}
+
+	@Override
+	public Player findOpponent(Long id) {
+		Assert.notNull(id, "Provided id shouldn't be null");
+		final Game game = gameService.findByPlayerId(id);
+
+		return game.getPlayer1().getId().equals(id) ? game.getPlayer2() : game.getPlayer1();
 	}
 }

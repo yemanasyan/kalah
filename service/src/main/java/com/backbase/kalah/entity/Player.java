@@ -1,15 +1,16 @@
 package com.backbase.kalah.entity;
 
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.UUID;
-
 
 /**
  * @author Yengibar Manasyan
@@ -18,8 +19,9 @@ import java.util.UUID;
 @Table(name = "player")
 public class Player extends BaseEntity {
 
-	@Column(name = "player_uuid", unique = true, nullable = false)
-	private UUID uuid;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+	@JoinColumn(name = "kalah_id")
+	private Kalah kalah;
 
 	@Column(name = "my_turn", nullable = false)
 	private Boolean myTurn;
@@ -28,15 +30,14 @@ public class Player extends BaseEntity {
 	 * Default constructor.
 	 */
 	public Player() {
-		this.uuid = UUID.randomUUID();
 	}
 
-	public UUID getUuid() {
-		return uuid;
+	public Kalah getKalah() {
+		return kalah;
 	}
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
+	public void setKalah(Kalah kalah) {
+		this.kalah = kalah;
 	}
 
 	public Boolean getMyTurn() {
@@ -61,7 +62,7 @@ public class Player extends BaseEntity {
 		Player rhs = (Player) obj;
 		return new EqualsBuilder()
 				.appendSuper(super.equals(obj))
-				.append(this.uuid, rhs.uuid)
+				.append(this.kalah, rhs.kalah)
 				.append(this.myTurn, rhs.myTurn)
 				.isEquals();
 	}
@@ -70,16 +71,16 @@ public class Player extends BaseEntity {
 	public int hashCode() {
 		return new HashCodeBuilder()
 				.appendSuper(super.hashCode())
-				.append(uuid)
+				.append(kalah)
 				.append(myTurn)
 				.toHashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
 				.appendSuper(super.toString())
-				.append("uuid", uuid)
+				.append("kalah", kalah)
 				.append("myTurn", myTurn)
 				.toString();
 	}

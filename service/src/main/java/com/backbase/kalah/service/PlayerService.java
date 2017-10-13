@@ -1,9 +1,6 @@
 package com.backbase.kalah.service;
 
 import com.backbase.kalah.entity.Player;
-import com.backbase.kalah.exception.EmptyPitException;
-import com.backbase.kalah.exception.EntityNotFoundException;
-import com.backbase.kalah.exception.NotPlayerTurnException;
 
 import java.util.UUID;
 
@@ -29,4 +26,12 @@ public interface PlayerService {
 	 * @return found Player
 	 */
 	Player findByUuid(UUID uuid);
+
+	/**
+	 * Find opponent by player id.
+	 *
+	 * @param id player id
+	 * @return opponent or null if there is not
+	 */
+	Player findOpponent(Long id);
 }
