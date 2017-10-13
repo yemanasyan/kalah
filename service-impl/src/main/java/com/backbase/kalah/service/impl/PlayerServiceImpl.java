@@ -1,9 +1,7 @@
 package com.backbase.kalah.service.impl;
 
-import com.backbase.kalah.entity.Game;
 import com.backbase.kalah.entity.Kalah;
 import com.backbase.kalah.entity.Player;
-import com.backbase.kalah.service.GameService;
 import com.backbase.kalah.service.KalahService;
 import com.backbase.kalah.service.PlayerService;
 import com.backbase.kalah.service.reporitory.PlayerRepo;
@@ -23,18 +21,15 @@ public class PlayerServiceImpl implements PlayerService {
 
 	private final KalahService kalahService;
 
-	private final GameService gameService;
-
 	/**
 	 * Init based on provided beans.
 	 *
 	 * @param playerRepo   player repo
 	 * @param kalahService kalah service
 	 */
-	public PlayerServiceImpl(PlayerRepo playerRepo, KalahService kalahService, GameService gameService) {
+	public PlayerServiceImpl(PlayerRepo playerRepo, KalahService kalahService) {
 		this.playerRepo = playerRepo;
 		this.kalahService = kalahService;
-		this.gameService = gameService;
 	}
 
 	@Transactional
@@ -53,13 +48,5 @@ public class PlayerServiceImpl implements PlayerService {
 	public Player findByUuid(UUID uuid) {
 		Assert.notNull(uuid, "Provided uuid shouldn't be null");
 		return playerRepo.findByUuid(uuid);
-	}
-
-	@Override
-	public Player findOpponent(Long id) {
-		Assert.notNull(id, "Provided id shouldn't be null");
-		final Game game = gameService.findByPlayerId(id);
-
-		return game.getPlayer1().getId().equals(id) ? game.getPlayer2() : game.getPlayer1();
 	}
 }

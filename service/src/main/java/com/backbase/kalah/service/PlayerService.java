@@ -26,12 +26,4 @@ public interface PlayerService {
 	 * @return found Player
 	 */
 	Player findByUuid(UUID uuid);
-
-	/**
-	 * Find opponent by player id.
-	 *
-	 * @param id player id
-	 * @return opponent or null if there is not
-	 */
-	Player findOpponent(Long id);
 }

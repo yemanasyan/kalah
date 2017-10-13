@@ -28,16 +28,8 @@ public class KalahServiceImpl implements KalahService {
 	}
 
 	@Override
-	public Kalah findByPlayerUuid(UUID playerUuid) {
-		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
-		return kalahRepo.findByPlayerUuid(playerUuid);
-	}
-
-	@Override
 	public Kalah save(Kalah kalah) {
 		Assert.notNull(kalah, "Provided kalah shouldn't be null");
 		return kalahRepo.save(kalah);
 	}
-
-
 }

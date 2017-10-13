@@ -80,6 +80,14 @@ public class GameServiceImpl implements GameService {
 		return gameRepo.findFirstByPlayer1IdOrPlayer2Id(playerId, playerId);
 	}
 
+	@Override
+	public Player findGameOpponentByPlayerId(Long playerId) {
+		Assert.notNull(playerId, "Provided id shouldn't be null");
+		final Game game = findByPlayerId(playerId);
+
+		return game.getPlayer1().getId().equals(playerId) ? game.getPlayer2() : game.getPlayer1();
+	}
+
 	@Transactional
 	@Override
 	public Game save(Game game) {
@@ -103,16 +111,16 @@ public class GameServiceImpl implements GameService {
 			throw new NotPlayerTurnException("It's not player turn with UUID: " + playerUuid);
 		}
 
-		final Kalah kalah = kalahService.findByPlayerUuid(playerUuid);
+		final Kalah kalah = player.getKalah();
 		final Integer[] pits = kalah.getPits();
 
 		// Find opponent
-		final Player opponent = playerService.findOpponent(player.getId());
+		final Player opponent = findGameOpponentByPlayerId(player.getId());
 		if (opponent == null) {
 			throw new EntityNotFoundException("Not found opponent for player with UUID: " + playerUuid);
 		}
 
-		final Kalah opponentKalah = kalahService.findByPlayerUuid(opponent.getUuid());
+		final Kalah opponentKalah = opponent.getKalah();
 
 		final Integer stones = pits[position];
 		if (stones == 0) {

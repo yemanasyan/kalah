@@ -12,7 +12,4 @@ import java.util.UUID;
  */
 public interface KalahRepo extends JpaRepository<Kalah, Long> {
 
-	Kalah findByUuid(UUID uuid);
-
-	Kalah findByPlayerUuid(UUID uuid);
 }
