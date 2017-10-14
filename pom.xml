@@ -21,6 +21,7 @@
 	<modules>
 		<module>service</module>
 		<module>service-impl</module>
+		<module>service-impl-int-test</module>
 		<module>controller</module>
 	</modules>
 
