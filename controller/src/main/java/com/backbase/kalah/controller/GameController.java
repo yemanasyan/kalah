@@ -33,6 +33,7 @@ public class GameController {
 		this.gameServiceFacade = gameServiceFacade;
 	}
 
+	// TODO add exception handling and logging
 	@ApiOperation(value = "Enter to new game.", response = GameBean.class)
 	@PostMapping
 	public GameBean enterToGame() {
@@ -45,10 +46,10 @@ public class GameController {
 		return gameServiceFacade.getGameByPlayerId(playerId);
 	}
 
-	@ApiOperation(value = "Main endpoint to play Kalah game.", response = GameBean.class)
+	@ApiOperation(value = "Play Kalah game.", response = GameBean.class)
 	@PostMapping("/play")
 	public GameBean play(@ApiParam(required = true) @RequestParam(PLAYER_ID) UUID playerId,
-	                     @ApiParam(required = true) @RequestParam(POSITION) Integer position) {
+	                     @ApiParam(required = true, allowableValues = "[0,5]") @RequestParam(POSITION) Integer position) {
 		return gameServiceFacade.play(playerId, position);
 	}
 }

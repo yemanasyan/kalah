@@ -70,7 +70,7 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 	@Override
 	public GameBean enterToGame() {
 		final Game game = gameService.enterToGame();
-		final UUID playerId = game.getPlayer1() != null ? game.getPlayer1().getUuid() : game.getPlayer2().getUuid();
+		final UUID playerId = game.getPlayer2() != null ? game.getPlayer2().getUuid() : game.getPlayer1().getUuid();
 		return convertToGameBean(game, playerId);
 	}
 

@@ -44,6 +44,64 @@ public class GameServiceImpl implements GameService {
 		this.kalahService = kalahService;
 	}
 
+	/**
+	 * Play in players Kalah.
+	 *
+	 * @param position      position from which should start game
+	 * @param stones        stones count
+	 * @param kalah         players Kalah
+	 * @param opponentKalah opponents Kalah
+	 * @param isPlayerSide  shows weather you are in players side
+	 */
+	private static Integer playInKalah(Integer position, Integer stones, Kalah kalah, Kalah opponentKalah, boolean isPlayerSide) {
+		final Integer[] pits = kalah.getPits();
+
+		while (stones > 0 && position <= Kalah.PITS_COUNT) {
+			// by each iteration stones count should decrement by 1
+			stones--;
+
+			if (position.equals(Kalah.PITS_COUNT)) {
+				kalah.incrementHome(1);
+			} else {
+				final int opponentReversPitIndex = Kalah.PITS_COUNT - 1 - position;
+				final Integer opponentStonesCount = opponentKalah.getPitStonesCount(opponentReversPitIndex);
+
+				if (isPlayerSide && stones == 0 && pits[position] == 0 && opponentStonesCount > 0) {
+					opponentKalah.emptyPit(opponentReversPitIndex);
+					kalah.incrementHome(opponentStonesCount + 1);
+				} else {
+					pits[position]++;
+				}
+			}
+
+			position++;
+		}
+
+		return stones;
+	}
+
+	/**
+	 * Shows weather player turn should be changed or not.
+	 *
+	 * @param position current position
+	 * @param stones   stones in that position
+	 * @return {@code true} if turn should be changed, otherwise {@code false}
+	 */
+	private static boolean isTurnPlayer(Integer position, Integer stones) {
+		// one full iteration is double size of one player Kalah plus 2 as home for each player
+		final int oneFullIteration = Kalah.PITS_COUNT * 2 + 2;
+		int i = 0;
+		while (oneFullIteration * i < stones) {
+			if (stones - oneFullIteration * i == Kalah.PITS_COUNT - position) {
+				return false;
+			}
+
+			i++;
+		}
+
+		return true;
+	}
+
 	@Transactional
 	@Override
 	public Game enterToGame() {
@@ -110,12 +168,12 @@ public class GameServiceImpl implements GameService {
 	@Override
 	public Game play(UUID playerUuid, Integer position) {
 		Assert.notNull(position, "Provided position shouldn't be null");
-		Assert.isTrue(position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
+		Assert.isTrue(position >= 0 && position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
 		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
 
 		final Player player = playerService.findByUuid(playerUuid);
 		if (player == null) {
-			throw new EntityNotFoundException("Not found entity with UUID: " + playerUuid);
+			throw new EntityNotFoundException("Not found player with UUID: " + playerUuid);
 		}
 
 		if (!player.getMyTurn()) {
@@ -123,7 +181,6 @@ public class GameServiceImpl implements GameService {
 		}
 
 		final Kalah kalah = player.getKalah();
-		final Integer[] pits = kalah.getPits();
 
 		// Find opponent
 		final Player opponent = findGameOpponentByPlayerId(player.getId());
@@ -131,56 +188,29 @@ public class GameServiceImpl implements GameService {
 			throw new EntityNotFoundException("Not found opponent for player with UUID: " + playerUuid);
 		}
 
-		final Kalah opponentKalah = opponent.getKalah();
-
-		final Integer stones = pits[position];
+		final Integer[] pits = kalah.getPits();
+		Integer stones = pits[position];
 		if (stones == 0) {
 			throw new EmptyPitException(String.format("Pit with position: %d is empty", position));
 		}
 
-		pits[position] = 0;
-		final int lastIndex = Math.min(position + stones - 1, Kalah.PITS_COUNT);
-		for (int i = position + 1; i <= lastIndex; i++) {
-			final int opponentReversPitIndex = Kalah.PITS_COUNT - 1 - i;
-			final Integer opponentStonesCount = opponentKalah.getPitStonesCount(opponentReversPitIndex);
-			if (pits[i] == 0 && i == lastIndex && opponentStonesCount > 0) {
-				pits[i] = 0;
-				kalah.incrementHome(opponentStonesCount + 1);
-				opponentKalah.emptyPit(opponentReversPitIndex);
-			} else {
-				pits[position + i + 1]++;
-			}
-		}
+		// empty pit from which stones are taken
+		kalah.emptyPit(position);
 
-		kalah.setPits(pits);
+		// turn player or not
+		final boolean turnPlayer = isTurnPlayer(position, stones);
+		final Kalah opponentKalah = opponent.getKalah();
 
-		final Integer[] opponentPits = opponentKalah.getPits();
-		boolean turnPlayer = true;
+		while (stones != 0) {
+			stones = playInKalah(position + 1, stones, kalah, opponentKalah, true);
 
-		if (position + stones >= Kalah.PITS_COUNT) {
-			int restStones = stones - (Kalah.PITS_COUNT - position - 1);
-			kalah.incrementHome(1);
-			restStones--;
-
-			for (int i = 0; i < restStones; i++) {
-				opponentPits[i]++;
-			}
-			opponentKalah.setPits(opponentPits);
-		} else if (position + stones == Kalah.PITS_COUNT) {
-			turnPlayer = false;
+			// start play from 0/first pit
+			position = 0;
+			stones = playInKalah(position, stones, opponentKalah, kalah, false);
 		}
 
 		kalahService.save(kalah);
 		kalahService.save(opponentKalah);
-
-		final Game game = findByPlayerId(player.getId());
-		final Game refreshedGame;
-		if (Stream.of(pits).noneMatch(s -> s == 0) || Stream.of(opponentPits).noneMatch(s -> s == 0)) {
-			game.setFinished(true);
-			refreshedGame = save(game);
-		} else {
-			refreshedGame = findByUUID(game.getUuid());
-		}
 
 		if (turnPlayer) {
 			// give turn to opponent
@@ -189,6 +219,15 @@ public class GameServiceImpl implements GameService {
 
 			opponent.setMyTurn(true);
 			playerService.save(opponent);
+		}
+
+		final Game game = findByPlayerId(player.getId());
+		final Game refreshedGame;
+		if (Stream.of(kalah.getPits()).allMatch(s -> s == 0) || Stream.of(opponentKalah.getPits()).allMatch(s -> s == 0)) {
+			game.setFinished(true);
+			refreshedGame = save(game);
+		} else {
+			refreshedGame = findByUUID(game.getUuid());
 		}
 
 		return refreshedGame;
