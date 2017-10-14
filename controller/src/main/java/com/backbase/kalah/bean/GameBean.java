@@ -1,5 +1,6 @@
 package com.backbase.kalah.bean;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -7,7 +8,7 @@ import java.util.UUID;
  *
  * @author Yengibar Manasyan
  */
-public class GameBean {
+public class GameBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

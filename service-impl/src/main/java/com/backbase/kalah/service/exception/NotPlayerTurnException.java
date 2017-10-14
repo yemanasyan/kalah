@@ -1,4 +1,4 @@
-package com.backbase.kalah.exception;
+package com.backbase.kalah.service.exception;
 
 /**
  * Throw it when player want to play not during his/her turn.

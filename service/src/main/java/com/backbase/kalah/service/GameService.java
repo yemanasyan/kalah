@@ -2,9 +2,6 @@ package com.backbase.kalah.service;
 
 import com.backbase.kalah.entity.Game;
 import com.backbase.kalah.entity.Player;
-import com.backbase.kalah.exception.EmptyPitException;
-import com.backbase.kalah.exception.EntityNotFoundException;
-import com.backbase.kalah.exception.NotPlayerTurnException;
 
 import java.util.UUID;
 
@@ -69,9 +66,6 @@ public interface GameService {
 	 * @param playerUuid player uuid
 	 * @param position   position from which stones where taken.
 	 * @return changed game
-	 * @throws EntityNotFoundException if not found player
-	 * @throws NotPlayerTurnException  if it's not players turn
-	 * @throws EmptyPitException       if pit with provided position is empty
 	 */
-	Game play(UUID playerUuid, Integer position) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException;
+	Game play(UUID playerUuid, Integer position);
 }

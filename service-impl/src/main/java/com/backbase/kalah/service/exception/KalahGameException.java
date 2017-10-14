@@ -1,11 +1,11 @@
-package com.backbase.kalah.exception;
+package com.backbase.kalah.service.exception;
 
 /**
- * Base exception.
+ * Base unchecked exception for all exceptions.
  *
  * @author Yengibar Manasyan
  */
-public class KalahGameException extends Exception {
+public abstract class KalahGameException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

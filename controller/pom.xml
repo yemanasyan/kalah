@@ -14,7 +14,6 @@
 
 	<properties>
 		<swagger.version>2.7.0</swagger.version>
-		<orika.version>1.5.2</orika.version>
 	</properties>
 
 	<dependencies>
@@ -26,11 +25,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>orika-core</artifactId>
-			<version>${orika.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>

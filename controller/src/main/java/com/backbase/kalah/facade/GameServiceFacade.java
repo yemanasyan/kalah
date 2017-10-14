@@ -1,9 +1,6 @@
 package com.backbase.kalah.facade;
 
 import com.backbase.kalah.bean.GameBean;
-import com.backbase.kalah.exception.EmptyPitException;
-import com.backbase.kalah.exception.EntityNotFoundException;
-import com.backbase.kalah.exception.NotPlayerTurnException;
 
 import java.util.UUID;
 
@@ -35,9 +32,6 @@ public interface GameServiceFacade {
 	 * @param playerId player UUID
 	 * @param position kalah position
 	 * @return updated game bean
-	 * @throws EntityNotFoundException if not found player
-	 * @throws NotPlayerTurnException  if it's not players turn
-	 * @throws EmptyPitException       if pit with provided position is empty
 	 */
-	GameBean play(UUID playerId, Integer position) throws EntityNotFoundException, EmptyPitException, NotPlayerTurnException;
+	GameBean play(UUID playerId, Integer position);
 }

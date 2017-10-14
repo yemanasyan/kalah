@@ -3,12 +3,12 @@ package com.backbase.kalah.service.impl;
 import com.backbase.kalah.entity.Game;
 import com.backbase.kalah.entity.Kalah;
 import com.backbase.kalah.entity.Player;
-import com.backbase.kalah.exception.EmptyPitException;
-import com.backbase.kalah.exception.EntityNotFoundException;
-import com.backbase.kalah.exception.NotPlayerTurnException;
 import com.backbase.kalah.service.GameService;
 import com.backbase.kalah.service.KalahService;
 import com.backbase.kalah.service.PlayerService;
+import com.backbase.kalah.service.exception.EmptyPitException;
+import com.backbase.kalah.service.exception.EntityNotFoundException;
+import com.backbase.kalah.service.exception.NotPlayerTurnException;
 import com.backbase.kalah.service.reporitory.GameRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +83,12 @@ public class GameServiceImpl implements GameService {
 	@Override
 	public Game findByPlayerUuid(UUID playerUuid) {
 		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
-		return gameRepo.findFirstByPlayer1UuidOrPlayer2Uuid(playerUuid, playerUuid);
+		final Game game = gameRepo.findFirstByPlayer1UuidOrPlayer2Uuid(playerUuid, playerUuid);
+		if (game == null) {
+			throw new EntityNotFoundException("Couldn't find entity by player UUID: " + playerUuid);
+		}
+
+		return game;
 	}
 
 	@Override
@@ -103,7 +108,7 @@ public class GameServiceImpl implements GameService {
 
 	@Transactional
 	@Override
-	public Game play(UUID playerUuid, Integer position) throws EntityNotFoundException, NotPlayerTurnException, EmptyPitException {
+	public Game play(UUID playerUuid, Integer position) {
 		Assert.notNull(position, "Provided position shouldn't be null");
 		Assert.isTrue(position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
 		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");

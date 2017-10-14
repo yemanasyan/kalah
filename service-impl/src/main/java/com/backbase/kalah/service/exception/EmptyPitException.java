@@ -1,4 +1,4 @@
-package com.backbase.kalah.exception;
+package com.backbase.kalah.service.exception;
 
 /**
  * Throw this exception if player tried play from empty pit.
