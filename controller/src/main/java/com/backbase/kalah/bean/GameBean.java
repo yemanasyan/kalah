@@ -22,6 +22,8 @@ public class GameBean implements Serializable {
 
 	private Integer home;
 
+	private Boolean myTurn;
+
 	private Integer[] opponentPits;
 
 	private Integer opponentHome;
@@ -67,6 +69,14 @@ public class GameBean implements Serializable {
 
 	public void setHome(Integer home) {
 		this.home = home;
+	}
+
+	public Boolean getMyTurn() {
+		return myTurn;
+	}
+
+	public void setMyTurn(Boolean myTurn) {
+		this.myTurn = myTurn;
 	}
 
 	public Integer[] getOpponentPits() {

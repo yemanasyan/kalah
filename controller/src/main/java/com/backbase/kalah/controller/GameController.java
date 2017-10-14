@@ -49,7 +49,7 @@ public class GameController {
 	@ApiOperation(value = "Play Kalah game.", response = GameBean.class)
 	@PostMapping("/play")
 	public GameBean play(@ApiParam(required = true) @RequestParam(PLAYER_ID) UUID playerId,
-	                     @ApiParam(required = true, allowableValues = "[0,5]") @RequestParam(POSITION) Integer position) {
+	                     @ApiParam(required = true, allowableValues = "range[0,5]") @RequestParam(POSITION) Integer position) {
 		return gameServiceFacade.play(playerId, position);
 	}
 }

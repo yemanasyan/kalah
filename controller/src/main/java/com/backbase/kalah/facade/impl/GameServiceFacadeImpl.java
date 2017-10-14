@@ -45,13 +45,15 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 
 		final Player player;
 		final Player opponent;
-		if (player1 != null && playerId.equals(player1.getUuid())) {
+		if (player1 != null && playerId.equals(player1.getId())) {
 			player = player1;
 			opponent = player2;
 		} else {
 			player = player2;
 			opponent = player1;
 		}
+
+		gameBean.setMyTurn(player.getMyTurn());
 
 		// if player is not null kalah also shouldn't be null, null check is written for safety
 		if (player != null && player.getKalah() != null) {
@@ -70,13 +72,13 @@ public class GameServiceFacadeImpl implements GameServiceFacade {
 	@Override
 	public GameBean enterToGame() {
 		final Game game = gameService.enterToGame();
-		final UUID playerId = game.getPlayer2() != null ? game.getPlayer2().getUuid() : game.getPlayer1().getUuid();
+		final UUID playerId = game.getPlayer2() != null ? game.getPlayer2().getId() : game.getPlayer1().getId();
 		return convertToGameBean(game, playerId);
 	}
 
 	@Override
 	public GameBean getGameByPlayerId(UUID playerId) {
-		final Game game = gameService.findByPlayerUuid(playerId);
+		final Game game = gameService.findByPlayerId(playerId);
 		return convertToGameBean(game, playerId);
 	}
 

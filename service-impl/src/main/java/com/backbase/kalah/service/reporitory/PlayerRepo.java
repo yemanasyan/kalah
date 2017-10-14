@@ -10,8 +10,6 @@ import java.util.UUID;
  *
  * @author Yengibar Manasyan
  */
-public interface PlayerRepo extends JpaRepository<Player, Long> {
-
-	Player findByUuid(UUID uuid);
+public interface PlayerRepo extends JpaRepository<Player, UUID> {
 
 }

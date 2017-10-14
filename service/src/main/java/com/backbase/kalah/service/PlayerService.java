@@ -20,10 +20,10 @@ public interface PlayerService {
 	Player save(Player player);
 
 	/**
-	 * Find by uuid.
+	 * Find by id.
 	 *
-	 * @param uuid uuid
+	 * @param id Player id
 	 * @return found Player
 	 */
-	Player findByUuid(UUID uuid);
+	Player findById(UUID id);
 }

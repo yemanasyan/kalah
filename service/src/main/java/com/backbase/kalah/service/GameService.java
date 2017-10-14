@@ -21,12 +21,12 @@ public interface GameService {
 	Game enterToGame();
 
 	/**
-	 * Find game by UUID.
+	 * Find game by id.
 	 *
-	 * @param id game UUID
+	 * @param id game id
 	 * @return found game
 	 */
-	Game findByUUID(UUID id);
+	Game findById(UUID id);
 
 	/**
 	 * Find by player id.
@@ -34,15 +34,7 @@ public interface GameService {
 	 * @param playerId player id
 	 * @return found game
 	 */
-	Game findByPlayerId(Long playerId);
-
-	/**
-	 * Find by player UUID.
-	 *
-	 * @param playerUuid player UUID
-	 * @return found game
-	 */
-	Game findByPlayerUuid(UUID playerUuid);
+	Game findByPlayerId(UUID playerId);
 
 	/**
 	 * Find opponent by player id.
@@ -50,7 +42,7 @@ public interface GameService {
 	 * @param playerId player id
 	 * @return opponent or null if there is not
 	 */
-	Player findGameOpponentByPlayerId(Long playerId);
+	Player findGameOpponentByPlayerId(UUID playerId);
 
 	/**
 	 * Save game.
@@ -63,9 +55,9 @@ public interface GameService {
 	/**
 	 * Play the game.
 	 *
-	 * @param playerUuid player uuid
+	 * @param playerId player id
 	 * @param position   position from which stones where taken.
 	 * @return changed game
 	 */
-	Game play(UUID playerUuid, Integer position);
+	Game play(UUID playerId, Integer position);
 }

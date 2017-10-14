@@ -45,8 +45,8 @@ public class PlayerServiceImpl implements PlayerService {
 	}
 
 	@Override
-	public Player findByUuid(UUID uuid) {
-		Assert.notNull(uuid, "Provided uuid shouldn't be null");
-		return playerRepo.findByUuid(uuid);
+	public Player findById(UUID id) {
+		Assert.notNull(id, "Provided uuid shouldn't be null");
+		return playerRepo.findOne(id);
 	}
 }

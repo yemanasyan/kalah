@@ -46,19 +46,19 @@ public class GameServiceImplTest {
 	}
 
 	@Test
-	public void testFindByUUID() throws Exception {
+	public void testFindById() throws Exception {
 		// Create object
 		final Game game = new Game();
-		final UUID uuid = UUID.randomUUID();
+		final UUID id = UUID.randomUUID();
 
 		// mock
-		Mockito.when(gameRepo.findByUuid(uuid)).thenReturn(game);
+		Mockito.when(gameRepo.findOne(id)).thenReturn(game);
 
 		// call
-		final Game returnedGame = gameService.findByUUID(uuid);
+		final Game returnedGame = gameService.findById(id);
 
 		// verify
-		Mockito.verify(gameRepo).findByUuid(uuid);
+		Mockito.verify(gameRepo).findOne(id);
 
 		// Assert
 		Assert.assertEquals(returnedGame, game);

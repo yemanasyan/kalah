@@ -126,31 +126,25 @@ public class GameServiceImpl implements GameService {
 	}
 
 	@Override
-	public Game findByUUID(UUID uuid) {
-		Assert.notNull(uuid, "Provided uuid shouldn't be null");
+	public Game findById(UUID id) {
+		Assert.notNull(id, "Provided id shouldn't be null");
 
-		return gameRepo.findByUuid(uuid);
+		return gameRepo.findOne(id);
 	}
 
 	@Override
-	public Game findByPlayerId(Long playerId) {
+	public Game findByPlayerId(UUID playerId) {
 		Assert.notNull(playerId, "Provided playerId shouldn't be null");
-		return gameRepo.findFirstByPlayer1IdOrPlayer2Id(playerId, playerId);
-	}
-
-	@Override
-	public Game findByPlayerUuid(UUID playerUuid) {
-		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
-		final Game game = gameRepo.findFirstByPlayer1UuidOrPlayer2Uuid(playerUuid, playerUuid);
+		final Game game = gameRepo.findFirstByPlayer1IdOrPlayer2Id(playerId, playerId);
 		if (game == null) {
-			throw new EntityNotFoundException("Couldn't find entity by player UUID: " + playerUuid);
+			throw new EntityNotFoundException("Couldn't find entity by player id: " + playerId);
 		}
 
 		return game;
 	}
 
 	@Override
-	public Player findGameOpponentByPlayerId(Long playerId) {
+	public Player findGameOpponentByPlayerId(UUID playerId) {
 		Assert.notNull(playerId, "Provided id shouldn't be null");
 		final Game game = findByPlayerId(playerId);
 
@@ -166,18 +160,18 @@ public class GameServiceImpl implements GameService {
 
 	@Transactional
 	@Override
-	public Game play(UUID playerUuid, Integer position) {
+	public Game play(UUID playerId, Integer position) {
 		Assert.notNull(position, "Provided position shouldn't be null");
 		Assert.isTrue(position >= 0 && position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
-		Assert.notNull(playerUuid, "Provided playerUuid shouldn't be null");
+		Assert.notNull(playerId, "Provided playerId shouldn't be null");
 
-		final Player player = playerService.findByUuid(playerUuid);
+		final Player player = playerService.findById(playerId);
 		if (player == null) {
-			throw new EntityNotFoundException("Not found player with UUID: " + playerUuid);
+			throw new EntityNotFoundException("Not found player with id: " + playerId);
 		}
 
 		if (!player.getMyTurn()) {
-			throw new NotPlayerTurnException("It's not player turn with UUID: " + playerUuid);
+			throw new NotPlayerTurnException("It's not player turn with id: " + playerId);
 		}
 
 		final Kalah kalah = player.getKalah();
@@ -185,7 +179,7 @@ public class GameServiceImpl implements GameService {
 		// Find opponent
 		final Player opponent = findGameOpponentByPlayerId(player.getId());
 		if (opponent == null) {
-			throw new EntityNotFoundException("Not found opponent for player with UUID: " + playerUuid);
+			throw new EntityNotFoundException("Not found opponent for player with id: " + playerId);
 		}
 
 		final Integer[] pits = kalah.getPits();
@@ -227,7 +221,7 @@ public class GameServiceImpl implements GameService {
 			game.setFinished(true);
 			refreshedGame = save(game);
 		} else {
-			refreshedGame = findByUUID(game.getUuid());
+			refreshedGame = findById(game.getId());
 		}
 
 		return refreshedGame;

@@ -10,13 +10,9 @@ import java.util.UUID;
  *
  * @author Yengibar Manasyan
  */
-public interface GameRepo extends JpaRepository<Game, Long> {
+public interface GameRepo extends JpaRepository<Game, UUID> {
 
 	Game findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 
-	Game findByUuid(UUID uuid);
-
-	Game findFirstByPlayer1IdOrPlayer2Id(Long firstId, Long secondId);
-
-	Game findFirstByPlayer1UuidOrPlayer2Uuid(UUID firstUuid, UUID secondUuid);
+	Game findFirstByPlayer1IdOrPlayer2Id(UUID firstId, UUID secondId);
 }

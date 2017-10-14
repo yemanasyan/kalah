@@ -1,8 +1,10 @@
 package com.backbase.kalah.entity;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.UUID;
@@ -17,32 +19,51 @@ public class BaseEntity {
 
 	@Id
 	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(name = "uuid", unique = true, nullable = false)
-	private UUID uuid;
+	private UUID id;
 
 	/**
 	 * Default constructor.
 	 */
 	public BaseEntity() {
-		this.uuid = UUID.randomUUID();
+		id = UUID.randomUUID();
 	}
 
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public UUID getUuid() {
-		return uuid;
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		BaseEntity rhs = (BaseEntity) obj;
+		return new EqualsBuilder()
+				.append(this.id, rhs.id)
+				.isEquals();
 	}
 
-	public void setUuid(UUID uuid) {
-		this.uuid = uuid;
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.append(id)
+				.toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("id", id)
+				.toString();
 	}
 }
