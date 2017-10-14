@@ -10,8 +10,6 @@ import com.backbase.kalah.service.exception.EmptyPitException;
 import com.backbase.kalah.service.exception.EntityNotFoundException;
 import com.backbase.kalah.service.exception.NotPlayerTurnException;
 import com.backbase.kalah.service.reporitory.GameRepo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -26,8 +24,6 @@ import java.util.stream.Stream;
  */
 @Service
 public class GameServiceImpl implements GameService {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GameServiceImpl.class);
 
 	private final GameRepo gameRepo;
 
@@ -109,8 +105,6 @@ public class GameServiceImpl implements GameService {
 	@Transactional
 	@Override
 	public Game enterToGame() {
-		LOGGER.debug("Start enterToGame method call");
-
 		// Create new Player every time when someone want to start new game
 		final Player player = new Player();
 
@@ -128,23 +122,17 @@ public class GameServiceImpl implements GameService {
 			game.setPlayer2(savedPlayer);
 		}
 
-		final Game savedGame = gameRepo.save(game);
-		LOGGER.debug("Successfully finished enterToGame method call. Result: " + savedGame);
-
-		return savedGame;
+		return gameRepo.save(game);
 	}
 
 	@Override
 	public Game findById(UUID id) {
 		Assert.notNull(id, "Provided id shouldn't be null");
-		LOGGER.debug("Start findById method call. id: " + id);
 
 		final Game game = gameRepo.findOne(id);
 		if (game == null) {
 			throw new EntityNotFoundException("Not found game with id: " + id);
 		}
-
-		LOGGER.debug(String.format("Successfully found game by id: %s. Result: %s", id, game));
 
 		return game;
 	}
@@ -152,14 +140,11 @@ public class GameServiceImpl implements GameService {
 	@Override
 	public Game findByPlayerId(UUID playerId) {
 		Assert.notNull(playerId, "Provided playerId shouldn't be null");
-		LOGGER.debug("Start findByPlayerId method call. playerId: " + playerId);
 
 		final Game game = gameRepo.findFirstByPlayer1IdOrPlayer2Id(playerId, playerId);
 		if (game == null) {
 			throw new EntityNotFoundException("Couldn't find entity by player id: " + playerId);
 		}
-
-		LOGGER.debug("Found ");
 
 		return game;
 	}
