@@ -7,6 +7,8 @@ package com.backbase.kalah.service.exception;
  */
 public class EmptyPitException extends KalahGameException {
 
+	private static final long serialVersionUID = 1L;
+
 	public EmptyPitException(String message) {
 		super(message);
 	}

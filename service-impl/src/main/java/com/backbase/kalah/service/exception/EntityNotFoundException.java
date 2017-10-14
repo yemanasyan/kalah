@@ -7,11 +7,10 @@ package com.backbase.kalah.service.exception;
  */
 public class EntityNotFoundException extends KalahGameException {
 
+	private static final long serialVersionUID = 1L;
+
 	public EntityNotFoundException(String message) {
 		super(message);
 	}
 
-	public EntityNotFoundException(String message, Exception cause) {
-		super(message, cause);
-	}
 }
