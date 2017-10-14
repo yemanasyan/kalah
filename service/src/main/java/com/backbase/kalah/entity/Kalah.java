@@ -16,11 +16,6 @@ import javax.persistence.Transient;
 @Table(name = "kalah")
 public class Kalah extends BaseEntity {
 
-	// TODO make it configurable and move it to properties file
-	public static final Integer PITS_COUNT = 6;
-
-	public static final Integer STONES_COUNT = 6;
-
 	@Column(name = "home", nullable = false)
 	private Integer home;
 
@@ -28,14 +23,23 @@ public class Kalah extends BaseEntity {
 	private Integer[] pits;
 
 	/**
-	 * Default constructor.
+	 * Default constructor for ORM.
 	 */
 	public Kalah() {
+	}
+
+	/**
+	 * Construct based on pits and stones count.
+	 *
+	 * @param pitsCount   pits count
+	 * @param stonesCount stones count
+	 */
+	public Kalah(Integer pitsCount, Integer stonesCount) {
 		this.home = 0;
 		// Pits is Integer to make code consistent, but int could be easier
-		this.pits = new Integer[PITS_COUNT];
-		for (int i = 0; i < PITS_COUNT; i++) {
-			this.pits[i] = STONES_COUNT;
+		this.pits = new Integer[pitsCount];
+		for (int i = 0; i < pitsCount; i++) {
+			this.pits[i] = stonesCount;
 		}
 	}
 

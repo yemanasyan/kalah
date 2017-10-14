@@ -47,7 +47,7 @@ public interface GameService {
 	/**
 	 * Save game.
 	 *
-	 * @param game game to save
+	 * @param game game which will be updated
 	 * @return saved game
 	 */
 	Game save(Game game);

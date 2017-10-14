@@ -10,6 +10,7 @@ import com.backbase.kalah.service.exception.EmptyPitException;
 import com.backbase.kalah.service.exception.EntityNotFoundException;
 import com.backbase.kalah.service.exception.NotPlayerTurnException;
 import com.backbase.kalah.service.reporitory.GameRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -31,6 +32,9 @@ public class GameServiceImpl implements GameService {
 
 	private final KalahService kalahService;
 
+	@Value("${kalah.pits.count}")
+	private Integer pitsCount;
+
 	/**
 	 * Initialize service based on provided beans.
 	 *
@@ -45,6 +49,28 @@ public class GameServiceImpl implements GameService {
 	}
 
 	/**
+	 * Shows weather player turn should be changed or not.
+	 *
+	 * @param position current position
+	 * @param stones   stones in that position
+	 * @return {@code true} if turn should be changed, otherwise {@code false}
+	 */
+	private boolean isTurnPlayer(Integer position, Integer stones) {
+		// one full iteration is double size of one player Kalah plus 2 as home for each player
+		final int oneFullIteration = pitsCount * 2 + 2;
+		int i = 0;
+		while (oneFullIteration * i < stones) {
+			if (stones - oneFullIteration * i == pitsCount - position) {
+				return false;
+			}
+
+			i++;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Play in players Kalah.
 	 *
 	 * @param position      position from which should start game
@@ -53,17 +79,17 @@ public class GameServiceImpl implements GameService {
 	 * @param opponentKalah opponents Kalah
 	 * @param isPlayerSide  shows weather you are in players side
 	 */
-	private static Integer playInKalah(Integer position, Integer stones, Kalah kalah, Kalah opponentKalah, boolean isPlayerSide) {
+	private Integer playInKalah(Integer position, Integer stones, Kalah kalah, Kalah opponentKalah, boolean isPlayerSide) {
 		final Integer[] pits = kalah.getPits();
 
-		while (stones > 0 && position <= Kalah.PITS_COUNT) {
+		while (stones > 0 && position <= pitsCount) {
 			// by each iteration stones count should decrement by 1
 			stones--;
 
-			if (position.equals(Kalah.PITS_COUNT)) {
+			if (position.equals(pitsCount)) {
 				kalah.incrementHome(1);
 			} else {
-				final int opponentReversPitIndex = Kalah.PITS_COUNT - 1 - position;
+				final int opponentReversPitIndex = pitsCount - 1 - position;
 				final Integer opponentStonesCount = opponentKalah.getPitStonesCount(opponentReversPitIndex);
 
 				if (isPlayerSide && stones == 0 && pits[position] == 0 && opponentStonesCount > 0) {
@@ -80,46 +106,24 @@ public class GameServiceImpl implements GameService {
 		return stones;
 	}
 
-	/**
-	 * Shows weather player turn should be changed or not.
-	 *
-	 * @param position current position
-	 * @param stones   stones in that position
-	 * @return {@code true} if turn should be changed, otherwise {@code false}
-	 */
-	private static boolean isTurnPlayer(Integer position, Integer stones) {
-		// one full iteration is double size of one player Kalah plus 2 as home for each player
-		final int oneFullIteration = Kalah.PITS_COUNT * 2 + 2;
-		int i = 0;
-		while (oneFullIteration * i < stones) {
-			if (stones - oneFullIteration * i == Kalah.PITS_COUNT - position) {
-				return false;
-			}
-
-			i++;
-		}
-
-		return true;
-	}
-
 	@Transactional
 	@Override
 	public Game enterToGame() {
 		// Create new Player every time when someone want to start new game
-		final Player player = new Player();
+		final Player player = playerService.create();
 
 		final Game existingGame = gameRepo.findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 		final Game game;
 		if (existingGame == null) {
 			game = new Game();
 			player.setMyTurn(true);
-			final Player savedPlayer = playerService.save(player);
-			game.setPlayer1(savedPlayer);
+			final Player updatedPlayer = playerService.update(player);
+			game.setPlayer1(updatedPlayer);
 		} else {
 			player.setMyTurn(false);
-			final Player savedPlayer = playerService.save(player);
 			game = existingGame;
-			game.setPlayer2(savedPlayer);
+			final Player updatedPlayer = playerService.update(player);
+			game.setPlayer1(updatedPlayer);
 		}
 
 		return gameRepo.save(game);
@@ -168,7 +172,7 @@ public class GameServiceImpl implements GameService {
 	@Override
 	public Game play(UUID playerId, Integer position) {
 		Assert.notNull(position, "Provided position shouldn't be null");
-		Assert.isTrue(position >= 0 && position < Kalah.PITS_COUNT, "Provided position shouldn't be grate then " + (Kalah.PITS_COUNT - 1));
+		Assert.isTrue(position >= 0 && position < pitsCount, "Provided position shouldn't be grate then " + (pitsCount - 1));
 		Assert.notNull(playerId, "Provided playerId shouldn't be null");
 
 		final Player player = playerService.findById(playerId);
@@ -209,16 +213,16 @@ public class GameServiceImpl implements GameService {
 			stones = playInKalah(position, stones, opponentKalah, kalah, false);
 		}
 
-		kalahService.save(kalah);
-		kalahService.save(opponentKalah);
+		kalahService.update(kalah);
+		kalahService.update(opponentKalah);
 
 		if (turnPlayer) {
 			// give turn to opponent
 			player.setMyTurn(false);
-			playerService.save(player);
+			playerService.update(player);
 
 			opponent.setMyTurn(true);
-			playerService.save(opponent);
+			playerService.update(opponent);
 		}
 
 		final Game game = findByPlayerId(player.getId());

@@ -3,10 +3,10 @@ package com.backbase.kalah.service.impl;
 import com.backbase.kalah.entity.Kalah;
 import com.backbase.kalah.service.KalahService;
 import com.backbase.kalah.service.reporitory.KalahRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.util.UUID;
 
 /**
  * Kalah service impl.
@@ -18,6 +18,12 @@ public class KalahServiceImpl implements KalahService {
 
 	private final KalahRepo kalahRepo;
 
+	@Value("${kalah.pits.count}")
+	private Integer pitsCount;
+
+	@Value("${kalah.stones.count}")
+	private Integer stonesCount;
+
 	/**
 	 * Initialize based on provided beans.
 	 *
@@ -27,9 +33,18 @@ public class KalahServiceImpl implements KalahService {
 		this.kalahRepo = kalahRepo;
 	}
 
+	@Transactional
 	@Override
-	public Kalah save(Kalah kalah) {
+	public Kalah update(Kalah kalah) {
 		Assert.notNull(kalah, "Provided kalah shouldn't be null");
+		Assert.isTrue(!kalah.isNewEntity(), "Provided kalah should exists in DB.");
 		return kalahRepo.save(kalah);
+	}
+
+	@Transactional
+	@Override
+	public Kalah create() {
+		final Kalah newKalah = new Kalah(pitsCount, stonesCount);
+		return kalahRepo.save(newKalah);
 	}
 }

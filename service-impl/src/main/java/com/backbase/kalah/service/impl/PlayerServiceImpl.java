@@ -34,13 +34,20 @@ public class PlayerServiceImpl implements PlayerService {
 
 	@Transactional
 	@Override
-	public Player save(Player player) {
+	public Player update(Player player) {
 		Assert.notNull(player, "Provided player shouldn't be null");
-		if (player.getKalah() == null) {
-			final Kalah kalah = kalahService.save(new Kalah());
-			player.setKalah(kalah);
-		}
+		Assert.isTrue(!player.isNewEntity(), "Provided player shouldn't be new instance");
+		Assert.notNull(player.getKalah(), "Provided player should contain kalah");
 
+		return playerRepo.save(player);
+	}
+
+	@Transactional
+	@Override
+	public Player create() {
+		final Player player = new Player();
+		final Kalah kalah = kalahService.create();
+		player.setKalah(kalah);
 		return playerRepo.save(player);
 	}
 

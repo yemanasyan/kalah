@@ -2,8 +2,6 @@ package com.backbase.kalah.service;
 
 import com.backbase.kalah.entity.Kalah;
 
-import java.util.UUID;
-
 /**
  * Kalah service.
  *
@@ -12,10 +10,17 @@ import java.util.UUID;
 public interface KalahService {
 
 	/**
-	 * Save Kalah.
+	 * Update existing Kalah.
 	 *
-	 * @param kalah kalah to save
+	 * @param kalah kalah to update
 	 * @return saved kalah
 	 */
-	Kalah save(Kalah kalah);
+	Kalah update(Kalah kalah);
+
+	/**
+	 * Create new Kalah.
+	 *
+	 * @return created kalah
+	 */
+	Kalah create();
 }

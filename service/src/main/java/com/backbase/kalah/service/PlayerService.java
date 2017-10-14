@@ -17,7 +17,14 @@ public interface PlayerService {
 	 * @param player player
 	 * @return saved player
 	 */
-	Player save(Player player);
+	Player update(Player player);
+
+	/**
+	 * Create new Player.
+	 *
+	 * @return created player
+	 */
+	Player create();
 
 	/**
 	 * Find by id.

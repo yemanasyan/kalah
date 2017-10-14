@@ -1,6 +1,7 @@
 ## Kalah game project
 The assessment was for Kalah with 6 pits and in each one 6 stones,
 but developed configurable Kalah with **n** pits and **m** stones.
+To change them please have a look to service.properties file.
 
 ## Run
 Run controller module (com.backbase.kalah.KalahApplication class) 
