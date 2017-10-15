@@ -33,7 +33,6 @@ public class GameController {
 		this.gameServiceFacade = gameServiceFacade;
 	}
 
-	// TODO add exception handling and logging
 	@ApiOperation(value = "Enter to new game.", response = GameBean.class)
 	@PostMapping
 	public GameBean enterToGame() {
