@@ -23,7 +23,7 @@ public class Player extends BaseEntity {
 	@JoinColumn(name = "kalah_id")
 	private Kalah kalah;
 
-	@Column(name = "my_turn", nullable = false)
+	@Column(name = "my_turn")
 	private Boolean myTurn;
 
 	/**

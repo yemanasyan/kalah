@@ -110,20 +110,20 @@ public class GameServiceImpl implements GameService {
 	@Override
 	public Game enterToGame() {
 		// Create new Player every time when someone want to start new game
-		final Player player = playerService.create();
+		final Player player = new Player();
 
 		final Game existingGame = gameRepo.findFirstByPlayer1IsNotNullAndPlayer2IsNull();
 		final Game game;
 		if (existingGame == null) {
 			game = new Game();
 			player.setMyTurn(true);
-			final Player updatedPlayer = playerService.update(player);
-			game.setPlayer1(updatedPlayer);
+			final Player createdPlayer = playerService.save(player);
+			game.setPlayer1(createdPlayer);
 		} else {
 			player.setMyTurn(false);
 			game = existingGame;
-			final Player updatedPlayer = playerService.update(player);
-			game.setPlayer1(updatedPlayer);
+			final Player createdPlayer = playerService.save(player);
+			game.setPlayer2(createdPlayer);
 		}
 
 		return gameRepo.save(game);
@@ -213,27 +213,42 @@ public class GameServiceImpl implements GameService {
 			stones = playInKalah(position, stones, opponentKalah, kalah, false);
 		}
 
-		kalahService.update(kalah);
-		kalahService.update(opponentKalah);
-
 		if (turnPlayer) {
 			// give turn to opponent
 			player.setMyTurn(false);
-			playerService.update(player);
+			playerService.save(player);
 
 			opponent.setMyTurn(true);
-			playerService.update(opponent);
+			playerService.save(opponent);
 		}
 
-		final Game game = findByPlayerId(player.getId());
-		final Game refreshedGame;
+		Game game = findByPlayerId(player.getId());
+
 		if (Stream.of(kalah.getPits()).allMatch(s -> s == 0) || Stream.of(opponentKalah.getPits()).allMatch(s -> s == 0)) {
+			putStonesToHome(kalah);
+			putStonesToHome(opponentKalah);
 			game.setFinished(true);
-			refreshedGame = save(game);
-		} else {
-			refreshedGame = findById(game.getId());
+			game = save(game);
 		}
 
-		return refreshedGame;
+		kalahService.update(kalah);
+		kalahService.update(opponentKalah);
+
+		return game;
+	}
+
+	/**
+	 * Take stones from pits and put them to home.
+	 *
+	 * @param kalah kalah
+	 */
+	private void putStonesToHome(Kalah kalah) {
+		final Integer[] pits = kalah.getPits();
+		for (int i = 0; i < pitsCount; i++) {
+			pits[i] = 0;
+			kalah.incrementHome(pits[i]);
+		}
+
+		kalah.setPits(pits);
 	}
 }

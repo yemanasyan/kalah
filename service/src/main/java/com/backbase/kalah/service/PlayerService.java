@@ -12,19 +12,12 @@ import java.util.UUID;
 public interface PlayerService {
 
 	/**
-	 * Save Player.
+	 * Create or update a Player.
 	 *
-	 * @param player player
+	 * @param player player to create or update
 	 * @return saved player
 	 */
-	Player update(Player player);
-
-	/**
-	 * Create new Player.
-	 *
-	 * @return created player
-	 */
-	Player create();
+	Player save(Player player);
 
 	/**
 	 * Find by id.

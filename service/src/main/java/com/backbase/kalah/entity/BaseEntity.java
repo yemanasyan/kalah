@@ -7,7 +7,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import java.util.UUID;
 
 /**
@@ -22,15 +21,11 @@ public class BaseEntity {
 	@Column(name = "id")
 	private UUID id;
 
-	@Transient
-	private Boolean newEntity;
-
 	/**
 	 * Default constructor.
 	 */
 	public BaseEntity() {
 		id = UUID.randomUUID();
-		newEntity = true;
 	}
 
 	public UUID getId() {
@@ -39,11 +34,6 @@ public class BaseEntity {
 
 	public void setId(UUID id) {
 		this.id = id;
-		this.newEntity = false;
-	}
-
-	public Boolean isNewEntity() {
-		return newEntity;
 	}
 
 	@Override

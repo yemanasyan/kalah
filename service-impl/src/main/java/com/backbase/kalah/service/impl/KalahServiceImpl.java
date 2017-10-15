@@ -37,7 +37,6 @@ public class KalahServiceImpl implements KalahService {
 	@Override
 	public Kalah update(Kalah kalah) {
 		Assert.notNull(kalah, "Provided kalah shouldn't be null");
-		Assert.isTrue(!kalah.isNewEntity(), "Provided kalah should exists in DB.");
 		return kalahRepo.save(kalah);
 	}
 
